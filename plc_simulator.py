@@ -11,7 +11,7 @@ PORT_LIST = [20000, 20001, 20002, 20003]  # クライアントと一致させる
 MACHINE_LIST = ["CLT_1","CLT_2","CLT_3","CLT_4"]
 LOTNAME_LIST = ["2025A1114","2025B1114","2025C1114","2025D1114"]
 INTERVAL = 2  # sec
-SEND_NUM=100
+SEND_NUM=1000
 NUM_PER_SEND=10 #1回の送信で何個分の情報を送るか
 TYPE_NAME="MH15376WJCCRB"
 
@@ -20,16 +20,16 @@ UNIT_DICT={
     "U1_A1":[pj.prepare_arm_count()],
     "U2_PH":[pj.prepare_ph()],
     "U2_A1":[pj.prepare_arm_count()],
-    "U2_TS":[pj.prepare_ts_pass(),pj.prepare_ts_fail()],
+    "U2_TS":[pj.prepare_ts_pass()],
     "U2_A2":[pj.prepare_arm_count()],
     "U3_A1":[pj.prepare_arm_count()],
-    "U3_TS":[pj.prepare_ts_pass(),pj.prepare_ts_fail()],
+    "U3_TS":[pj.prepare_ts_pass()],
     "U3_A2":[pj.prepare_arm_count()],
     "U4_A1":[pj.prepare_arm_count()],
-    "U4_TS":[pj.prepare_ts_pass(),pj.prepare_ts_fail()],
+    "U4_TS":[pj.prepare_ts_pass()],
     "U4_A2":[pj.prepare_arm_count()],
     "U5_A1":[pj.prepare_arm_count()],
-    "U5_TS":[pj.prepare_ts_pass(),pj.prepare_ts_fail()],
+    "U5_TS":[pj.prepare_ts_pass()],
     "U5_A2":[pj.prepare_arm_count()],
     "U6_A1":[pj.prepare_arm_count()],
     "U6_TS":[pj.prepare_ts_ip()],
