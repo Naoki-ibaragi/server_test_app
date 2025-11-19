@@ -16,43 +16,45 @@ NUM_PER_SEND=10 #1回の送信で何個分の情報を送るか
 TYPE_NAME="MH15376WJCCRB"
 
 UNIT_DICT={
-    "U1_TR":[pj.prepare_ld_tr()],
-    "U1_A1":[pj.prepare_arm_count()],
-    "U2_PH":[pj.prepare_ph()],
-    "U2_A1":[pj.prepare_arm_count()],
-    "U2_TS":[pj.prepare_ts_pass()],
-    "U2_A2":[pj.prepare_arm_count()],
-    "U3_A1":[pj.prepare_arm_count()],
-    "U3_TS":[pj.prepare_ts_pass()],
-    "U3_A2":[pj.prepare_arm_count()],
-    "U4_A1":[pj.prepare_arm_count()],
-    "U4_TS":[pj.prepare_ts_pass()],
-    "U4_A2":[pj.prepare_arm_count()],
-    "U5_A1":[pj.prepare_arm_count()],
-    "U5_TS":[pj.prepare_ts_pass()],
-    "U5_A2":[pj.prepare_arm_count()],
-    "U6_A1":[pj.prepare_arm_count()],
-    "U6_TS":[pj.prepare_ts_ip()],
-    "U6_A2":[pj.prepare_arm_count()],
-    "U6_T1":[pj.prepare_t1_ip()],
-    "U6_T2":[pj.prepare_t2_ip()],
-    "U7_PH":[pj.prepare_ph()],
-    "U7_PI":[pj.prepare_uld_pi()],
-    "U7_CI":[pj.prepare_uld_ci()],
-    "U7_A1":[pj.prepare_arm_count()],
-    "U1_AL":[pj.prepare_alarm()],
-    "U2_AL":[pj.prepare_alarm()],
-    "U3_AL":[pj.prepare_alarm()],
-    "U4_AL":[pj.prepare_alarm()],
-    "U5_AL":[pj.prepare_alarm()],
-    "U6_AL":[pj.prepare_alarm()],
-    "U7_AL":[pj.prepare_alarm()],
+    "U1_TR":[pj.prepare_ld_tr],
+    "U1_A1":[pj.prepare_arm_count],
+    "U2_PH":[pj.prepare_ph],
+    "U2_A1":[pj.prepare_arm_count],
+    "U2_TS":[pj.prepare_ts_pass],
+    "U2_A2":[pj.prepare_arm_count],
+    "U3_A1":[pj.prepare_arm_count],
+    "U3_TS":[pj.prepare_ts_pass],
+    "U3_A2":[pj.prepare_arm_count],
+    "U4_A1":[pj.prepare_arm_count],
+    "U4_TS":[pj.prepare_ts_pass],
+    "U4_A2":[pj.prepare_arm_count],
+    "U5_A1":[pj.prepare_arm_count],
+    "U5_TS":[pj.prepare_ts_pass],
+    "U5_A2":[pj.prepare_arm_count],
+    "U6_A1":[pj.prepare_arm_count],
+    "U6_TS":[pj.prepare_ts_ip],
+    "U6_A2":[pj.prepare_arm_count],
+    "U6_T1":[pj.prepare_t1_ip],
+    "U6_T2":[pj.prepare_t2_ip],
+    "U7_PH":[pj.prepare_ph],
+    "U7_PI":[pj.prepare_uld_pi],
+    "U7_CI":[pj.prepare_uld_ci],
+    "U7_A1":[pj.prepare_arm_count],
+    "U1_AL":[pj.prepare_alarm],
+    "U2_AL":[pj.prepare_alarm],
+    "U3_AL":[pj.prepare_alarm],
+    "U4_AL":[pj.prepare_alarm],
+    "U5_AL":[pj.prepare_alarm],
+    "U6_AL":[pj.prepare_alarm],
+    "U7_AL":[pj.prepare_alarm],
 }
 
 UNIT_KEY_LIST=list(UNIT_DICT.keys())
 
 # txtファイルを読み込んで一定間隔でデータを送り続ける
 def send_data(conn, machine,lot_name):
+
+    output_file=open("C:\\socket_output.txt","w")
     try:
         for i in range(SEND_NUM):
             print(i)
@@ -66,10 +68,11 @@ def send_data(conn, machine,lot_name):
                 key_name=UNIT_KEY_LIST[key_num]
                 func_num=random.randint(0,len(UNIT_DICT[key_name])-1)
 
-                send_dict[f"{key_name}_{count}"]=UNIT_DICT[key_name][func_num]
+                send_dict[f"{key_name}_{count}"]=UNIT_DICT[key_name][func_num]()
                 count+=1
 
-            conn.sendall(json.dumps(send_dict).encode('utf-8'))  # ✅ 修正：str → bytes に変換
+            conn.sendall(json.dumps(send_dict).encode('utf-8'))
+            output_file.write(json.dumps(send_dict))
             print(f"[送信] {machine}: {send_dict}")
             time.sleep(INTERVAL)
 
@@ -77,6 +80,7 @@ def send_data(conn, machine,lot_name):
         print(f"[エラー] 送信中に問題が発生しました: {e}")
     finally:
         conn.close()
+        output_file.close()
         print(f"[切断] {machine} のクライアント接続を閉じました")
 
 # 各ポートでサーバーを起動
