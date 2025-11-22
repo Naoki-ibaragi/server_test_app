@@ -3,10 +3,10 @@ from datetime import datetime
 
 SERIAL_MAX=10
 
-def prepare_ld_tr():
+def prepare_ld_tr(serial):
     dict={}
     arm=["oku","temae"]
-    dict["serial"]=random.randint(1,SERIAL_MAX)
+    dict["serial"]=serial
     dict["wano"]=random.randint(1,25)
     dict["wax"]=random.randint(1,30)
     dict["way"]=random.randint(1,30)
@@ -20,25 +20,25 @@ def prepare_ld_tr():
 
     return dict
 
-def prepare_arm_count():
+def prepare_arm_count(serial):
     dict={}
-    dict["serial"]=random.randint(1,SERIAL_MAX)
+    dict["serial"]=serial
     dict["count"]=random.randint(1,200000)
 
     return dict
 
-def prepare_ph():
+def prepare_ph(serial):
     dict={}
-    dict["serial"]=random.randint(1,SERIAL_MAX)
+    dict["serial"]=serial
     dict["ax"]=random.randint(-99999,99999)
     dict["ay"]=random.randint(-99999,99999)
     dict["at"]=random.randint(-99999,99999)
 
     return dict
 
-def prepare_ts_pass():
+def prepare_ts_pass(serial):
     dict={}
-    dict["serial"]=random.randint(1,SERIAL_MAX)
+    dict["serial"]=serial
     dict["probe_serial"]="PROBE_"+"%2d"%random.randint(1,100)
     dict["probe_count"]=random.randint(1,10000)
     dict["probe_x1"]=random.randint(0,1000000)
@@ -56,9 +56,9 @@ def prepare_ts_pass():
 
     return dict
 
-def prepare_ts_fail():
+def prepare_ts_fail(serial):
     dict={}
-    dict["serial"]=random.randint(1,SERIAL_MAX)
+    dict["serial"]=serial
     dict["probe_serial"]=None
     dict["probe_count"]=None
     dict["probe_x1"]=None
@@ -76,30 +76,30 @@ def prepare_ts_fail():
 
     return dict
 
-def prepare_ts_ip():
+def prepare_ts_ip(serial):
     dict={}
-    dict["serial"]=random.randint(1,SERIAL_MAX)
+    dict["serial"]=serial
     dict["stage_count"]=random.randint(-99999,99999)
 
     return dict
 
-def prepare_t1_ip():
+def prepare_t1_ip(serial):
     dict={}
-    dict["serial"]=random.randint(1,SERIAL_MAX)
+    dict["serial"]=serial
     dict["bin"]=random.randint(0,8)
 
     return dict
 
-def prepare_t2_ip():
+def prepare_t2_ip(serial):
     dict={}
-    dict["serial"]=random.randint(1,SERIAL_MAX)
+    dict["serial"]=serial
     dict["bin"]=random.randint(0,8)
 
     return dict
 
-def prepare_uld_pi():
+def prepare_uld_pi(serial):
     dict={}
-    dict["serial"]=random.randint(1,SERIAL_MAX)
+    dict["serial"]=serial
     dict["trayid"]="tray"+str(random.randint(1000000000,9999999999))
     dict["px"]=random.randint(1,18)
     dict["py"]=random.randint(1,18)
@@ -108,9 +108,9 @@ def prepare_uld_pi():
 
     return dict
  
-def prepare_uld_ci():
+def prepare_uld_ci(serial):
     dict={}
-    dict["serial"]=random.randint(1,SERIAL_MAX)
+    dict["serial"]=serial
     dict["px"]=random.randint(1,18)
     dict["py"]=random.randint(1,18)
     dict["cax"]=random.randint(-99999,99999)
@@ -119,17 +119,9 @@ def prepare_uld_ci():
 
     return dict
 
-def prepare_alarm():
+def prepare_alarm(serial):
     dict={}
-    dict["alarm_num"]=random.randint(400,800)
-    dict["serial"]=make_serial_list(6)
+    dict["alarm_num"]=random.randint(1,2)
+    dict["serial"]=[serial]
 
     return dict
-
-def make_serial_list(num):
-    lis=[]
-    for i in range(num):
-        n=random.randint(0,1)
-        serial=n*random.randint(1,SERIAL_MAX)
-        lis.append(serial)
-    return lis
