@@ -3,14 +3,14 @@ from datetime import datetime
 
 SERIAL_MAX=10
 
-def prepare_ld_tr(serial):
+def prepare_ld_tr(serial,unique):
     dict={}
     arm=["oku","temae"]
     dict["serial"]=serial
     dict["wano"]=random.randint(1,25)
     dict["wax"]=random.randint(1,30)
     dict["way"]=random.randint(1,30)
-    dict["trayid"]="tray"+str(random.randint(1000000000,9999999999))
+    dict["trayid"]="LD"+unique
     dict["trayarm"]=arm[random.randint(0,1)]
     dict["px"]=random.randint(1,18)
     dict["py"]=random.randint(1,18)
@@ -97,10 +97,10 @@ def prepare_t2_ip(serial):
 
     return dict
 
-def prepare_uld_pi(serial):
+def prepare_uld_pi(serial,unique):
     dict={}
     dict["serial"]=serial
-    dict["trayid"]="tray"+str(random.randint(1000000000,9999999999))
+    dict["trayid"]="ULD"+unique
     dict["px"]=random.randint(1,18)
     dict["py"]=random.randint(1,18)
     dict["pax"]=random.randint(-99999,99999)

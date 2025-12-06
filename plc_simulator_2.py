@@ -7,12 +7,12 @@ import json
 import components.prepare_json as pj
 
 # サーバー設定
-HOST = '0.0.0.0'  # すべてのインターフェースで接続待ち
+HOST = '127.0.0.1'  # すべてのインターフェースで接続待ち
 PORT_LIST = [20000, 20001, 20002, 20003]  # クライアントと一致させる
 MACHINE_LIST = ["CLT_1","CLT_2","CLT_3","CLT_4"]
-INTERVAL = 2  # sec
-SEND_NUM_PER_LOT=3000
-LOT_NUM=10
+INTERVAL = 1.5  # sec
+SEND_NUM_PER_LOT=1000
+LOT_NUM=5
 
 UNIT_DICT={
     "U1_TR":[pj.prepare_ld_tr],
@@ -39,16 +39,7 @@ UNIT_DICT={
     "U7_PI":[pj.prepare_uld_pi],
     "U7_CI":[pj.prepare_uld_ci],
     "U7_A1":[pj.prepare_arm_count],
-    "U1_AL":[pj.prepare_alarm],
-    "U2_AL":[pj.prepare_alarm],
-    "U3_AL":[pj.prepare_alarm],
-    "U4_AL":[pj.prepare_alarm],
-    "U5_AL":[pj.prepare_alarm],
-    "U6_AL":[pj.prepare_alarm],
-    "U7_AL":[pj.prepare_alarm],
 }
-
-UNIT_KEY_LIST=list(UNIT_DICT.keys())
 
 # txtファイルを読み込んで一定間隔でデータを送り続ける
 def send_data(conn, machine_no):
@@ -60,26 +51,39 @@ def send_data(conn, machine_no):
             type_name=f"TYPE{unique_str}"
             serial=1
             for j in range(SEND_NUM_PER_LOT):
-                send_dict={}
-                send_dict["LOT"]=lot_name
-                send_dict["TYPE"]=type_name
-                send_dict["MACHINE"]=machine_name
-                count=0
-                for key in UNIT_DICT:
-                    if "_AL" not in key:
+                newSendFlag=True
+                for idx,key in enumerate(UNIT_DICT): 
+                    if newSendFlag:
+                        send_dict={}
+                        send_dict["LOT"]=lot_name
+                        send_dict["TYPE"]=type_name
+                        send_dict["MACHINE"]=machine_name
+                        count=0
+                        newSendFlag=False
+
+                    if key=="U1_TR" or key=="U7_PI":
+                        send_dict[f"{key}_{count}"]=UNIT_DICT[key][0](serial,unique_str)
+                        count+=1
+                    else:
                         send_dict[f"{key}_{count}"]=UNIT_DICT[key][0](serial)
                         count+=1
-                        
-                    if serial%100==0: #100回に1回どこかのユニットのアラーム送信
-                        alarm_unit_no=random.randint(1,7)
-                        key_name=f"U{alarm_unit_no}_AL"
-                        send_dict[f"{key_name}_{count}"]=UNIT_DICT[key_name][0](serial)
-                        count+=1
-                    serial+=1
 
-                conn.sendall(json.dumps(send_dict).encode('utf-8'))
-                print(f"[送信] {machine_name}: {send_dict}")
-                time.sleep(INTERVAL)
+                    if idx==len(list(UNIT_DICT.keys()))-1: #100回に1回どこかのユニットのアラーム送信
+                        if serial%100==0: #100回に1回どこかのユニットのアラーム送信
+                            alarm_unit_no=random.randint(1,7)
+                            key_name=f"U{alarm_unit_no}_AL"
+                            send_dict[f"{key_name}_{count}"]=pj.prepare_alarm(serial)
+                            count+=1
+
+                    #3回に1回もしくは最後に送信してdictをリセット
+                    if idx%7==0 or idx==len(list(UNIT_DICT.keys()))-1:
+                        encoded_data=json.dumps(send_dict).encode('utf-8')
+                        conn.sendall(encoded_data)
+                        print(f"[送信_{idx}] {machine_name}: {len(encoded_data)}byte")
+                        time.sleep(INTERVAL)
+                        newSendFlag=True
+
+                serial+=1
 
     except Exception as e:
         print(f"[エラー] 送信中に問題が発生しました: {e}")
