@@ -1,3 +1,4 @@
+#送信伝文自動生成
 import socket
 import threading
 import random
@@ -9,9 +10,9 @@ import components.prepare_json as pj
 # サーバー設定
 HOST = '127.0.0.1'  # すべてのインターフェースで接続待ち
 PORT_LIST = [20000, 20001, 20002, 20003]  # クライアントと一致させる
-MACHINE_LIST = ["CLT_1","CLT_2","CLT_3","CLT_4"]
+MACHINE_LIST = [1,2,3,4]
 INTERVAL = 1.5  # sec
-SEND_NUM_PER_LOT=1000
+SEND_NUM_PER_LOT=20
 LOT_NUM=5
 
 UNIT_DICT={
